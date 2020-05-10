@@ -8,13 +8,16 @@
 
 import UIKit
 
-class MainViewController: UIViewController, XMLParserDelegate {
+// to ensure proper animation when cell is displayed
+var loadAnim = false
+
+
+class MainViewController: UIViewController, XMLParserDelegate, XmlDownloaderDelegate {
     
     // create array for news
     var news: [NewsItem] = []
     
-    // XmlParserManager instance/object/variable.
-    let myParser = XmlParserManager()
+    var parser: XmlParserManager?
     
     @IBOutlet weak var mainTableView: UITableView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
@@ -28,35 +31,42 @@ class MainViewController: UIViewController, XMLParserDelegate {
         
         
         // set table properties and hide
-        self.mainTableView.rowHeight = 140
-        self.mainTableView.separatorStyle = UITableViewCell.SeparatorStyle.none
+        self.mainTableView.rowHeight = 170
         self.mainTableView.isHidden = true
         
         // show ActivityIndicator while getting data
         self.activityIndicator.startAnimating()
         
-        // download news
-        news = getNews()
+        parser = XmlParserManager()
         
-        Timer.scheduledTimer(withTimeInterval: 5, repeats: false, block: {_ in
-            self.activityIndicator.stopAnimating()
-            self.activityIndicator.isHidden = true
-            self.mainTableView.isHidden = false
-            
-            // to start animation
-            loadAnim = true
-            self.mainTableView.reloadData()
-            
-            // loadAnim is set to false after reloadData() (both are in main thread queue)
-            DispatchQueue.main.asyncAfter(deadline: 1, execute: { loadAnim = false })
-        })
+        parser?.delegate = self
+        
+        // async download news
+        parser?.downloadNews()
 
+    }
+    
+    func didFinishDownloading(_ sender: XmlParserManager) {
+        
+        print("TU NIE")
+        
+        // get news
+        news = sender.getNews()
+        
+        self.activityIndicator.stopAnimating()
+        self.activityIndicator.isHidden = true
+        self.mainTableView.isHidden = false
+            
+        // to start table load animation
+        loadAnim = true
+        self.mainTableView.reloadData()
+            
+        // loadAnim is set to false after reloadData()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { loadAnim = false })
     }
 
 }
 
-// global var to ensure proper animation
-var loadAnim = false
 
 extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     
@@ -85,7 +95,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
             )
         } else {
             UIView.animate(
-                withDuration: 0.3,
+                withDuration: 0.1,
                 delay: 0,
                 animations: {
                     cell.alpha = 1
