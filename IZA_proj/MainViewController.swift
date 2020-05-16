@@ -31,14 +31,16 @@ class MainViewController: UIViewController, XMLParserDelegate, XmlDownloaderDele
         
         
         // set table properties and hide
-        self.mainTableView.rowHeight = 170
+        self.mainTableView.rowHeight = 155
         self.mainTableView.isHidden = true
         
         // show ActivityIndicator while getting data
         self.activityIndicator.startAnimating()
         
+        // new object
         parser = XmlParserManager()
         
+        //
         parser?.delegate = self
         
         // async download news
@@ -47,8 +49,6 @@ class MainViewController: UIViewController, XMLParserDelegate, XmlDownloaderDele
     }
     
     func didFinishDownloading(_ sender: XmlParserManager) {
-        
-        print("TU NIE")
         
         // get news
         news = sender.getNews()
@@ -64,7 +64,19 @@ class MainViewController: UIViewController, XMLParserDelegate, XmlDownloaderDele
         // loadAnim is set to false after reloadData()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { loadAnim = false })
     }
-
+    
+    // to pass data to PageViewController
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        // set var to selected TableCell (see tableView didSelectRow)
+        if segue.identifier == "MainToNavigation" {
+            
+            let destVC = segue.destination as! UINavigationController
+            let targetC = destVC.topViewController as! PageViewController
+            
+            targetC.newsUrl = sender as? URL
+        }
+    }
 }
 
 
@@ -81,6 +93,15 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
         
         cell.setItem(item: item)
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        // if row is selected, select newsItem to pass
+        let newsLink = news[indexPath.row].link
+        let newsUrl = URL(string: newsLink)
+        performSegue(withIdentifier: "MainToNavigation", sender: newsUrl)
+         
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

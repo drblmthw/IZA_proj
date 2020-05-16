@@ -21,21 +21,28 @@ class XmlParserManager: NSObject, XMLParserDelegate {
     
     var parser = XMLParser()
     
-    var url = URL(string: "https://www.aktuality.sk/rss/")!
-    
     private var element = ""
     
     // flags to check if element is inside item and to avoid elements inside image element
     private var is_in_item = false
     private var is_in_image = false
     
-    private var n_header = ""
-    private var n_description = ""
-    private var n_date = ""
+    private var n_header: String = ""
+    private var n_description: String = ""
+    private var n_date: String = ""
+    private var n_link: String = ""
     
     private var tempNews: [NewsItem] = []
     
+    private var rss_sources: [String:String] = [
+        "Aktuality":"https://www.aktuality.sk/rss/",
+        "Denník N":"https://dennikn.sk/feed",
+        "SME":"https://www.sme.sk/rss-title",
+        "HNonline":"https://articles.hnonline.sk/feed/rss2?category=hn-881",
+        "Pravda":"https://spravy.pravda.sk/rss/xml/"
+    ]
     
+    private var portal = ""
     
     func downloadNews() -> Void {
     
@@ -43,13 +50,19 @@ class XmlParserManager: NSObject, XMLParserDelegate {
         DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
             // clear array
             self.tempNews.removeAll()
-            self.parser = XMLParser(contentsOf: self.url)!
             
-            self.parser.delegate = self
-            self.parser.shouldProcessNamespaces = false
-            self.parser.shouldReportNamespacePrefixes = false
-            self.parser.shouldResolveExternalEntities = false
-            self.parser.parse()
+            for(port, link) in self.rss_sources {
+                self.portal = port
+                let url = URL(string: link)!
+            
+                self.parser = XMLParser(contentsOf: url)!
+                self.parser.delegate = self
+                self.parser.shouldProcessNamespaces = false
+                self.parser.shouldReportNamespacePrefixes = false
+                self.parser.shouldResolveExternalEntities = false
+                self.parser.parse()
+            }
+            
             
             // call didDownloadXml func
             DispatchQueue.main.async {
@@ -59,6 +72,20 @@ class XmlParserManager: NSObject, XMLParserDelegate {
     }
     
     func didDownloadXml() {
+        // when downloaded, sort by date
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "sk")
+        dateFormatter.dateFormat = "dd/MM/yy HH:mm"
+        tempNews.sort(by: {
+            let date1 = dateFormatter.date(from:$0.date)!
+            let date2 = dateFormatter.date(from:$1.date)!
+            if date1 < date2 {
+                return false
+            }
+            else {
+                return true
+            }
+        })
         //
         delegate?.didFinishDownloading(self)
     }
@@ -84,6 +111,7 @@ class XmlParserManager: NSObject, XMLParserDelegate {
             n_header = ""
             n_description = ""
             n_date = ""
+            n_link = ""
             
             // is inside item element
             is_in_item = true
@@ -100,6 +128,10 @@ class XmlParserManager: NSObject, XMLParserDelegate {
         if is_in_item == true {
             if element == "title" {
                 n_header.append(string)
+            }
+            
+            if element == "link" {
+                n_link.append(string)
             }
             
             if element == "description" {
@@ -122,17 +154,13 @@ class XmlParserManager: NSObject, XMLParserDelegate {
         if elementName == "item" && is_in_item == true {
             
             // format final output
-            n_header = formatHeader(header: n_header, portal: "Aktuality")
-            n_description = formatDescription(description: n_description, portal: "Aktuality")
-            n_date = formatDate(date: n_date, portal: "Aktuality")
-            
-            // trim whitespaces
-            n_header = n_header.trimmingCharacters(in: .whitespacesAndNewlines)
-            n_description = n_description.trimmingCharacters(in: .whitespacesAndNewlines)
-            n_date = n_date.trimmingCharacters(in: .whitespacesAndNewlines)
-            
-            if !n_header.isEmpty {
-                let tmp_item = NewsItem(header: n_header, description: n_description, date: n_date, source: "Aktuality")
+            n_header = formatHeader(header: n_header, portal: portal)
+            n_description = formatDescription(description: n_description, portal: portal)
+            n_date = formatDate(date: n_date, portal: portal)
+            n_link = formatLink(link: n_link, portal: portal)
+
+            if !n_header.isEmpty && !n_link.isEmpty && !n_description.isEmpty && !n_date.isEmpty {
+                let tmp_item = NewsItem(header: n_header, description: n_description, date: n_date, source: portal, link: n_link)
                 tempNews.append(tmp_item)
             }
         }

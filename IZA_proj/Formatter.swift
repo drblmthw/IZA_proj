@@ -49,48 +49,40 @@ func formatDate(date: String, portal: String) -> String {
     // get proper date from string
     let dateFormatter = DateFormatter()
     dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-    dateFormatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
+    
+    if(portal == "Pravda") {
+        //has different pubDate format
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+    } else {
+        // default date format
+        dateFormatter.dateFormat = "E, d MMM yyyy HH:mm:ss Z"
+    }
     
     // here we have date in structure
     let date = dateFormatter.date(from:tmpDate)!
+    
+    if date < Date(timeIntervalSinceNow: -86400) {
+        // filter last 24h
+        return ""
+    }
+        
     
     // get string from date
     dateFormatter.locale = Locale(identifier: "sk")
     dateFormatter.dateFormat = "dd/MM/yy HH:mm"
     tmpDate = dateFormatter.string(from: date)
-    
+
     return tmpDate
     
 }
 
 
-func getMonth(month: String) -> Int {
-    switch month {
-        case "Jan":
-            return 1
-        case "Feb":
-            return 2
-        case "Mar":
-            return 3
-        case "Apr":
-            return 4
-        case "May":
-            return 5
-        case "Jun":
-            return 6
-        case "Jul":
-            return 7
-        case "Aug":
-            return 8
-        case "Sep":
-            return 9
-        case "Oct":
-            return 10
-        case "Nov":
-            return 11
-        case "Dec":
-            return 12
-        default:
-            return 0
-    }
+func formatLink(link: String, portal: String) -> String {
+
+    var tmpLink = ""
+    
+    // trim whitespaces and newlines
+    tmpLink = link.trimmingCharacters(in: .whitespacesAndNewlines)
+    
+    return tmpLink
 }

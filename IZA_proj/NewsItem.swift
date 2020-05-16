@@ -14,12 +14,14 @@ class NewsItem {
     var description: String
     var date: String
     var source: String
+    var link: String
     
-    init(header: String, description: String, date: String, source: String) {
+    init(header: String, description: String, date: String, source: String, link: String) {
         self.header = header
         self.description = description
         self.date = date
         self.source = source
+        self.link = link
     }
     
 }
