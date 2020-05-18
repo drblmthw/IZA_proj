@@ -31,7 +31,7 @@
 		D2321EDC246837D300436A18 /* Formatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatter.swift; sourceTree = "<group>"; };
 		D2321EDE246971C700436A18 /* PageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
 		D2321EE12469D14C00436A18 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
-		D2D4FF742466BFF500D86EF0 /* IZA_proj.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IZA_proj.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2D4FF742466BFF500D86EF0 /* LiteNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiteNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2D4FF772466BFF500D86EF0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D2D4FF792466BFF500D86EF0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		D2D4FF7B2466BFF500D86EF0 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -72,7 +72,7 @@
 		D2D4FF752466BFF500D86EF0 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D2D4FF742466BFF500D86EF0 /* IZA_proj.app */,
+				D2D4FF742466BFF500D86EF0 /* LiteNews.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -115,7 +115,7 @@
 			);
 			name = IZA_proj;
 			productName = IZA_proj;
-			productReference = D2D4FF742466BFF500D86EF0 /* IZA_proj.app */;
+			productReference = D2D4FF742466BFF500D86EF0 /* LiteNews.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -330,7 +330,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "mk.IZA-proj";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = LiteNews;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -348,7 +348,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "mk.IZA-proj";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = LiteNews;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

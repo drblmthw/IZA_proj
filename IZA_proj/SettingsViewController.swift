@@ -10,6 +10,8 @@ import UIKit
 
 class SettingsViewController: UIViewController {
     
+    // Setting view with switches... Storing settings in UserDefaults
+    
     let userDefaults = UserDefaults.standard
 
     @IBOutlet weak var aktualityS: UISwitch!
@@ -57,7 +59,7 @@ class SettingsViewController: UIViewController {
         }
     }
     
-
+    // load states according to last modification
     override func viewDidLoad() {
         super.viewDidLoad()
         aktualityS.setOn(userDefaults.bool(forKey: "Set_aktuality"), animated: false)

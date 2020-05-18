@@ -18,6 +18,7 @@ class PageViewController: UIViewController, WKNavigationDelegate {
     
     @IBOutlet weak var webview: WKWebView!
     
+    // dismiss view on "Done" button hit
     @IBAction func doneBtn(_ sender: UIBarButtonItem) {
         dismiss(animated: true, completion: nil)
     }
@@ -26,13 +27,13 @@ class PageViewController: UIViewController, WKNavigationDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         guard (newsUrl != nil) else {
             return
         }
         
         let myurlreq = URLRequest(url: newsUrl!)
         
+        // load web page with URL
         webview.load(myurlreq)
         webview.allowsBackForwardNavigationGestures = true
 

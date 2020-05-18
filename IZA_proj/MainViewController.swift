@@ -14,8 +14,9 @@ var loadAnim = false
 
 class MainViewController: UIViewController, UISearchBarDelegate, XMLParserDelegate, XmlDownloaderDelegate {
     
-    // create array for news
+    // create array for all news
     var news: [NewsItem] = []
+    // create array for filtered/searched news
     var filteredNews: [NewsItem] = []
     
     var parser: XmlParserManager?
@@ -26,13 +27,21 @@ class MainViewController: UIViewController, UISearchBarDelegate, XMLParserDelega
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var noResults: UILabel!
     
+    
+    // reloads data when reload icon is pressed
     @IBAction func reloadData(_ sender: Any) {
+        // scroll table to first row and hide it
         self.mainTableView.setContentOffset(.zero, animated: false)
         self.mainTableView.isHidden = true
+        
         // show ActivityIndicator while getting data
         self.activityIndicator.startAnimating()
+        
+        // reset searchbox
         searchBar.text = ""
         searchBar.endEditing(true)
+        
+        // download data
         parser?.downloadNews()
     }
     
@@ -40,8 +49,11 @@ class MainViewController: UIViewController, UISearchBarDelegate, XMLParserDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // set delegate for search bar
         searchBar.delegate = self
+        // this removes ugly borders?
         searchBar.backgroundImage = UIImage()
+        
         
         // set delegate and data source for TableView
         mainTableView.delegate = self
@@ -58,11 +70,12 @@ class MainViewController: UIViewController, UISearchBarDelegate, XMLParserDelega
         // new object
         parser = XmlParserManager()
         
-        //
+        // set parser delegate
         parser?.delegate = self
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        // reload data on every appearence event
         self.mainTableView.setContentOffset(.zero, animated: false)
         self.mainTableView.isHidden = true
         // show ActivityIndicator while getting data
@@ -93,12 +106,16 @@ class MainViewController: UIViewController, UISearchBarDelegate, XMLParserDelega
     
     
     public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        // hide keyboard when "Search" hitted
         searchBar.endEditing(true)
     }
     
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        // dynamic search in news while typing
         filteredNews = searchNews(news: news, key: searchBar.text ?? "")
         
+        // if no results, show label displaying it
         if filteredNews.count == 0 {
             noResults.isHidden = false
             mainTableView.isHidden = true
@@ -128,6 +145,7 @@ class MainViewController: UIViewController, UISearchBarDelegate, XMLParserDelega
 
 extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return filteredNews.count
     }
@@ -154,6 +172,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // animation -  on load gradualy appear
         cell.alpha = 0
         if loadAnim == true {
             UIView.animate(
