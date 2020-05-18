@@ -12,18 +12,36 @@ import UIKit
 var loadAnim = false
 
 
-class MainViewController: UIViewController, XMLParserDelegate, XmlDownloaderDelegate {
+class MainViewController: UIViewController, UISearchBarDelegate, XMLParserDelegate, XmlDownloaderDelegate {
     
     // create array for news
     var news: [NewsItem] = []
+    var filteredNews: [NewsItem] = []
     
     var parser: XmlParserManager?
     
     @IBOutlet weak var mainTableView: UITableView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
+    @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var noResults: UILabel!
+    
+    @IBAction func reloadData(_ sender: Any) {
+        self.mainTableView.setContentOffset(.zero, animated: false)
+        self.mainTableView.isHidden = true
+        // show ActivityIndicator while getting data
+        self.activityIndicator.startAnimating()
+        searchBar.text = ""
+        searchBar.endEditing(true)
+        parser?.downloadNews()
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        searchBar.delegate = self
+        searchBar.backgroundImage = UIImage()
         
         // set delegate and data source for TableView
         mainTableView.delegate = self
@@ -42,16 +60,24 @@ class MainViewController: UIViewController, XMLParserDelegate, XmlDownloaderDele
         
         //
         parser?.delegate = self
-        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        self.mainTableView.setContentOffset(.zero, animated: false)
+        self.mainTableView.isHidden = true
+        // show ActivityIndicator while getting data
+        self.activityIndicator.startAnimating()
+        searchBar.text = ""
+        searchBar.endEditing(true)
         // async download news
         parser?.downloadNews()
-
     }
     
     func didFinishDownloading(_ sender: XmlParserManager) {
         
         // get news
         news = sender.getNews()
+        filteredNews = filterNews(news: news)
         
         self.activityIndicator.stopAnimating()
         self.activityIndicator.isHidden = true
@@ -64,6 +90,26 @@ class MainViewController: UIViewController, XMLParserDelegate, XmlDownloaderDele
         // loadAnim is set to false after reloadData()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { loadAnim = false })
     }
+    
+    
+    public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.endEditing(true)
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        filteredNews = searchNews(news: news, key: searchBar.text ?? "")
+        
+        if filteredNews.count == 0 {
+            noResults.isHidden = false
+            mainTableView.isHidden = true
+        } else {
+            noResults.isHidden = true
+            mainTableView.isHidden = false
+            self.mainTableView.setContentOffset(.zero, animated: false)
+            mainTableView.reloadData()
+        }
+    }
+    
     
     // to pass data to PageViewController
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -83,11 +129,11 @@ class MainViewController: UIViewController, XMLParserDelegate, XmlDownloaderDele
 extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return news.count
+        return filteredNews.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let item = news[indexPath.row]
+        let item = filteredNews[indexPath.row]
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "NewsCell") as! NewsCell
         
@@ -98,8 +144,11 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         // if row is selected, select newsItem to pass
-        let newsLink = news[indexPath.row].link
+        let newsLink = filteredNews[indexPath.row].link
         let newsUrl = URL(string: newsLink)
+        
+        tableView.deselectRow(at: indexPath, animated: true)
+        
         performSegue(withIdentifier: "MainToNavigation", sender: newsUrl)
          
     }

@@ -9,6 +9,14 @@
 import Foundation
 
 
+extension String {
+    /// Converts HTML string to a `NSAttributedString`
+    var htmlAttributedString: NSAttributedString? {
+        return try? NSAttributedString(data: Data(utf8), options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding: String.Encoding.utf8.rawValue], documentAttributes: nil)
+    }
+}
+
+
 func formatHeader(header: String, portal: String) -> String {
     
     var tmpHeader = ""
@@ -33,6 +41,11 @@ func formatDescription(description: String, portal: String) -> String {
     
     // trim whitespaces and newlines
     tmpDescription = tmpDescription.trimmingCharacters(in: .whitespacesAndNewlines)
+    
+    // decode HTML string
+    if let result = tmpDescription.htmlAttributedString?.string {
+        tmpDescription = result
+    }
     
     return tmpDescription
 }
@@ -86,3 +99,4 @@ func formatLink(link: String, portal: String) -> String {
     
     return tmpLink
 }
+

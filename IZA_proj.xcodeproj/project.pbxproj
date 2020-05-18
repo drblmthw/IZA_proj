@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D215E0BE2472EBAB00FD7B0A /* SearchAndFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D215E0BD2472EBAB00FD7B0A /* SearchAndFilter.swift */; };
+		D215E0C22473040100FD7B0A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D215E0C12473040100FD7B0A /* SettingsViewController.swift */; };
 		D2321ED72467179E00436A18 /* NewsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2321ED62467179E00436A18 /* NewsCell.swift */; };
 		D2321ED92467193E00436A18 /* NewsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2321ED82467193E00436A18 /* NewsItem.swift */; };
 		D2321EDB246803B400436A18 /* Downloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2321EDA246803B400436A18 /* Downloader.swift */; };
@@ -21,6 +23,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D215E0BD2472EBAB00FD7B0A /* SearchAndFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAndFilter.swift; sourceTree = "<group>"; };
+		D215E0C12473040100FD7B0A /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		D2321ED62467179E00436A18 /* NewsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsCell.swift; sourceTree = "<group>"; };
 		D2321ED82467193E00436A18 /* NewsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsItem.swift; sourceTree = "<group>"; };
 		D2321EDA246803B400436A18 /* Downloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Downloader.swift; sourceTree = "<group>"; };
@@ -79,12 +83,14 @@
 				D2D4FF772466BFF500D86EF0 /* AppDelegate.swift */,
 				D2D4FF792466BFF500D86EF0 /* SceneDelegate.swift */,
 				D2D4FF7B2466BFF500D86EF0 /* MainViewController.swift */,
+				D215E0BD2472EBAB00FD7B0A /* SearchAndFilter.swift */,
 				D2321EDE246971C700436A18 /* PageViewController.swift */,
 				D2321EDC246837D300436A18 /* Formatter.swift */,
 				D2321ED62467179E00436A18 /* NewsCell.swift */,
 				D2321ED82467193E00436A18 /* NewsItem.swift */,
 				D2321EDA246803B400436A18 /* Downloader.swift */,
 				D2D4FF7D2466BFF500D86EF0 /* Main.storyboard */,
+				D215E0C12473040100FD7B0A /* SettingsViewController.swift */,
 				D2D4FF802466BFFB00D86EF0 /* Assets.xcassets */,
 				D2D4FF822466BFFB00D86EF0 /* LaunchScreen.storyboard */,
 				D2D4FF852466BFFB00D86EF0 /* Info.plist */,
@@ -166,10 +172,12 @@
 				D2D4FF7C2466BFF500D86EF0 /* MainViewController.swift in Sources */,
 				D2321ED92467193E00436A18 /* NewsItem.swift in Sources */,
 				D2321EDB246803B400436A18 /* Downloader.swift in Sources */,
+				D215E0C22473040100FD7B0A /* SettingsViewController.swift in Sources */,
 				D2321EDD246837D400436A18 /* Formatter.swift in Sources */,
 				D2D4FF782466BFF500D86EF0 /* AppDelegate.swift in Sources */,
 				D2321ED72467179E00436A18 /* NewsCell.swift in Sources */,
 				D2D4FF7A2466BFF500D86EF0 /* SceneDelegate.swift in Sources */,
+				D215E0BE2472EBAB00FD7B0A /* SearchAndFilter.swift in Sources */,
 				D2321EDF246971C700436A18 /* PageViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

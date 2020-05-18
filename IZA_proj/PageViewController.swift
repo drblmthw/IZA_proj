@@ -28,7 +28,6 @@ class PageViewController: UIViewController, WKNavigationDelegate {
         
         
         guard (newsUrl != nil) else {
-            print("something fokked up")
             return
         }
         

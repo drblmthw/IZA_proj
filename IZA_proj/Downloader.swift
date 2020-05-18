@@ -34,18 +34,42 @@ class XmlParserManager: NSObject, XMLParserDelegate {
     
     private var tempNews: [NewsItem] = []
     
-    private var rss_sources: [String:String] = [
-        "Aktuality":"https://www.aktuality.sk/rss/",
-        "Denník N":"https://dennikn.sk/feed",
-        "SME":"https://www.sme.sk/rss-title",
-        "HNonline":"https://articles.hnonline.sk/feed/rss2?category=hn-881",
-        "Pravda":"https://spravy.pravda.sk/rss/xml/"
-    ]
+    private var rss_sources: [String:String] = [:]
     
     private var portal = ""
     
     func downloadNews() -> Void {
-    
+        
+        // set sources
+        let userDefaults = UserDefaults.standard
+        // if is this first run of app - set all sources to true
+        if !userDefaults.bool(forKey: "NOT_FIRST_RUN") {
+            userDefaults.set(true, forKey: "NOT_FIRST_RUN")
+            userDefaults.set(true, forKey: "Set_aktuality")
+            userDefaults.set(true, forKey: "Set_dennikn")
+            userDefaults.set(true, forKey: "Set_sme")
+            userDefaults.set(true, forKey: "Set_hnonline")
+            userDefaults.set(true, forKey: "Set_pravda")
+        }
+        
+        rss_sources.removeAll()
+        
+        if userDefaults.bool(forKey: "Set_aktuality") {
+            rss_sources["Aktuality"] = "https://www.aktuality.sk/rss/"
+        }
+        if userDefaults.bool(forKey: "Set_dennikn") {
+            rss_sources["Denník N"] = "https://dennikn.sk/feed"
+        }
+        if userDefaults.bool(forKey: "Set_sme") {
+            rss_sources["SME"] = "https://www.sme.sk/rss-title"
+        }
+        if userDefaults.bool(forKey: "Set_hnonline") {
+            rss_sources["HNonline"] = "https://articles.hnonline.sk/feed/rss2?category=hn-881"
+        }
+        if userDefaults.bool(forKey: "Set_pravda") {
+            rss_sources["Pravda"] = "https://spravy.pravda.sk/rss/xml/"
+        }
+           
         // run async download
         DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
             // clear array
@@ -72,7 +96,7 @@ class XmlParserManager: NSObject, XMLParserDelegate {
     }
     
     func didDownloadXml() {
-        // when downloaded, sort by date
+        // when downloaded, sort by date...
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "sk")
         dateFormatter.dateFormat = "dd/MM/yy HH:mm"
@@ -86,6 +110,8 @@ class XmlParserManager: NSObject, XMLParserDelegate {
                 return true
             }
         })
+        
+        
         //
         delegate?.didFinishDownloading(self)
     }
